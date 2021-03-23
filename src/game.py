@@ -87,7 +87,7 @@ class Game():
                         # bullet_x = player_x
                         self.fire_bullet(self.player_x, self.player_y)
                     if event.key == pygame.K_r:
-                        self.reset_enemies()
+                        self.reset()
                         self.score_value = 0
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -146,6 +146,28 @@ class Game():
 
             pygame.display.update()
 
+    def reset(self):
+        # enemy
+        self.reset_enemies()
+
+        # player
+        self.player_x_change = 0
+        self.player_x = 370
+        self.player_y = 500
+
+        # bullet
+        self.bullet_x_change = 0
+        self.bullet_y_change = -self.bullet_speed
+        self.bullet_x = 0
+        self.bullet_y = 0
+        # ready - hidden
+        # fire - moving
+        self.bullet_state = "ready"
+
+        # score
+        self.score_value = 0
+
+
     def __init__(self, bullet_speed=5,
                  player_speed=2.5,
                  enemy_speed=2,
@@ -153,6 +175,7 @@ class Game():
                  num_of_enemies=6):
 
         # settings
+        self.bullet_speed = bullet_speed
         self.player_speed = player_speed
         self.enemy_speed = enemy_speed
         self.num_of_enemies = num_of_enemies
