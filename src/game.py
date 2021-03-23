@@ -57,58 +57,60 @@ class Game():
             "Game Over", True, (255, 255, 255))
         self.screen.blit(game_over, (220, 250))
 
-    def run_game(self):
 
-        # Game loop
-        running = True
-        while (running):
-            # Red, Green, Blue
-            self.screen.fill((0, 0, 0))
-            # Background image
-            self.screen.blit(self.background, (0, 0))
+    def do_each_game_loop(self):
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        # Red, Green, Blue
+        self.screen.fill((0, 0, 0))
+        # Background image
+        self.screen.blit(self.background, (0, 0))
 
-                # key stroke
-                if event.type == pygame.KEYDOWN:
-                    # this only hit once even when key is kept down.
-                    if event.key == pygame.K_LEFT:
-                        # print("key left pressed")
-                        self.player_x_change = -self.player_speed
-                    if event.key == pygame.K_RIGHT:
-                        # print("key right pressed")
-                        self.player_x_change = self.player_speed
-                    if event.key == pygame.K_SPACE:
-                        # print("key space pressed")
-                        # bullet_state = "fire"
-                        # bullet_y = player_y
-                        # bullet_x = player_x
-                        self.fire_bullet(self.player_x, self.player_y)
-                    if event.key == pygame.K_r:
-                        self.reset()
-                        self.score_value = 0
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        # print("key released")
-                        self.player_x_change = 0
+        # input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
 
-            # player movement
+            # key stroke {
+            if event.type == pygame.KEYDOWN:
+                # this only hit once even when key is kept down.
+                if event.key == pygame.K_LEFT:
+                    # print("key left pressed")
+                    self.player_x_change = -self.player_speed
+                if event.key == pygame.K_RIGHT:
+                    # print("key right pressed")
+                    self.player_x_change = self.player_speed
+                if event.key == pygame.K_SPACE:
+                    # print("key space pressed")
+                    # bullet_state = "fire"
+                    # bullet_y = player_y
+                    # bullet_x = player_x
+                    self.fire_bullet(self.player_x, self.player_y)
+                if event.key == pygame.K_r:
+                    self.reset()
+                    self.score_value = 0
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    # print("key released")
+                    self.player_x_change = 0
+            # }
+
+        # movement
+        if not self.is_game_over:
+            # player movement {
             self.player_x += self.player_x_change
+
             # boundary check
             if self.player_x < 0:
                 self.player_x = 0
             if self.player_x >= 736:
                 self.player_x = 736
+            # }
 
             # enemy movement
             for i in range(self.num_of_enemies):
                 # Game over
                 if self.enemy_y[i] > 400:
-                    for j in range(self.num_of_enemies):
-                        self.enemy_y[j] = 2000
-                    self.show_game_over()
+                    self.is_game_over = True
                     break
 
                 self.enemy_x[i] += self.enemy_x_change[i]
@@ -120,12 +122,10 @@ class Game():
                 if self.enemy_x[i] < 0:
                     self.enemy_x_change[i] = -self.enemy_x_change[i]
                     self.enemy_y[i] += self.enemy_y_change[i]
-                self.show_enemy(self.enemy_x[i], self.enemy_y[i], i)
 
-            # bullet movement
+            # bullet movement {
             if self.bullet_state == "fire":
                 self.bullet_y += self.bullet_y_change
-                self.show_bullet(self.bullet_x, self.bullet_y)
 
                 # Collision
                 for i in range(self.num_of_enemies):
@@ -139,12 +139,31 @@ class Game():
 
             if self.bullet_y < -32:
                 self.bullet_state = "ready"
+            # }
 
-            self.show_player(self.player_x, self.player_y)
+        # render {
+        if self.bullet_state == "fire":
+            self.show_bullet(self.bullet_x, self.bullet_y)
+        self.show_player(self.player_x, self.player_y)
+        self.show_score(self.text_x, self.text_y)
+        for i in range(self.num_of_enemies):
+            self.show_enemy(self.enemy_x[i], self.enemy_y[i], i)
+        if (self.is_game_over):
+            self.show_game_over()
 
-            self.show_score(self.text_x, self.text_y)
+        pygame.display.update()
+        # }
 
-            pygame.display.update()
+        return True
+
+
+    def run_game(self):
+
+        # Game loop
+        is_running = True
+        while is_running:
+            is_running = self.do_each_game_loop()
+
 
     def reset(self):
         # enemy
@@ -166,6 +185,9 @@ class Game():
 
         # score
         self.score_value = 0
+
+        # Game over
+        self.is_game_over = False
 
 
     def __init__(self, bullet_speed=5,
@@ -230,6 +252,7 @@ class Game():
         self.text_y = 10
 
         # Game over
+        self.is_game_over = False
         self.game_over_font = pygame.font.Font("freesansbold.ttf", 64)
 
 
