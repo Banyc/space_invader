@@ -3,13 +3,6 @@ import pygame
 import random
 import math
 
-# pixels per frame
-bullet_speed = 5
-player_speed = 2.5
-enemy_speed = 2
-
-num_of_enemies = 6
-
 
 class Game():
 
@@ -22,25 +15,22 @@ class Game():
 
         for i in range(num_of_enemies):
             enemy_img_temp = pygame.image.load("images/ufo.png")
-            self.enemy_img.append(pygame.transform.scale(enemy_img_temp, (64, 64)))
+            self.enemy_img.append(
+                pygame.transform.scale(enemy_img_temp, (64, 64)))
 
             self.enemy_x_change.append(enemy_speed)
             self.enemy_y_change.append(32)
             self.enemy_x.append(random.randint(0, 736))
             self.enemy_y.append(random.randint(50, 150))
 
-
     def show_enemy(self, x, y, index):
         self.screen.blit(self.enemy_img[index], (x, y))
-
 
     def show_player(self, x, y):
         self.screen.blit(self.player_img, (x, y))
 
-
     def show_bullet(self, x, y):
         self.screen.blit(self.bullet_img, (x, y))
-
 
     def fire_bullet(self, x, y):
         if self.bullet_state == "ready":
@@ -49,23 +39,22 @@ class Game():
             self.bullet_y = y + 10
             # screen.blit(bullet_img, (x + 16, y + 10))
 
-
     def is_collision(self, enemy_x, enemy_y, bullet_x, bullet_y):
         enemy_x += 32
         enemy_y += 32
         bullet_x += 16
-        distance = math.sqrt((enemy_x - bullet_x) ** 2 + (enemy_y - bullet_y) ** 2)
+        distance = math.sqrt((enemy_x - bullet_x) ** 2 +
+                             (enemy_y - bullet_y) ** 2)
         return distance < 32
-
 
     def show_score(self, x, y):
         score = self.score_font.render(
             f"Score: {self.score_value}", True, (255, 255, 255))
         self.screen.blit(score, (x, y))
 
-
     def show_game_over(self):
-        game_over = self.game_over_font.render("Game Over", True, (255, 255, 255))
+        game_over = self.game_over_font.render(
+            "Game Over", True, (255, 255, 255))
         self.screen.blit(game_over, (220, 250))
 
     def run_game(self):
@@ -157,12 +146,11 @@ class Game():
 
             pygame.display.update()
 
-
     def __init__(self, bullet_speed=5,
-                player_speed=2.5,
-                enemy_speed=2,
+                 player_speed=2.5,
+                 enemy_speed=2,
 
-                num_of_enemies=6):
+                 num_of_enemies=6):
 
         pygame.init()
 
@@ -175,7 +163,8 @@ class Game():
         pygame.display.set_icon(icon)
 
         # background
-        background_temp = pygame.image.load("images/space-galaxy-background.jpg")
+        background_temp = pygame.image.load(
+            "images/space-galaxy-background.jpg")
         self.background = pygame.transform.scale(background_temp, (800, 600))
 
         # enemy
@@ -217,5 +206,13 @@ class Game():
 
 
 if __name__ == "__main__":
-    game = Game()
+    # pixels per frame
+    bullet_speed = 5
+    player_speed = 2.5
+    enemy_speed = 2
+    num_of_enemies = 6
+    game = Game(bullet_speed,
+                player_speed,
+                enemy_speed,
+                num_of_enemies)
     game.run_game()
