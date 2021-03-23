@@ -13,12 +13,12 @@ class Game():
         del self.enemy_x[:]
         del self.enemy_y[:]
 
-        for i in range(num_of_enemies):
+        for i in range(self.num_of_enemies):
             enemy_img_temp = pygame.image.load("images/ufo.png")
             self.enemy_img.append(
                 pygame.transform.scale(enemy_img_temp, (64, 64)))
 
-            self.enemy_x_change.append(enemy_speed)
+            self.enemy_x_change.append(self.enemy_speed)
             self.enemy_y_change.append(32)
             self.enemy_x.append(random.randint(0, 736))
             self.enemy_y.append(random.randint(50, 150))
@@ -76,10 +76,10 @@ class Game():
                     # this only hit once even when key is kept down.
                     if event.key == pygame.K_LEFT:
                         # print("key left pressed")
-                        self.player_x_change = -player_speed
+                        self.player_x_change = -self.player_speed
                     if event.key == pygame.K_RIGHT:
                         # print("key right pressed")
-                        self.player_x_change = player_speed
+                        self.player_x_change = self.player_speed
                     if event.key == pygame.K_SPACE:
                         # print("key space pressed")
                         # bullet_state = "fire"
@@ -103,10 +103,10 @@ class Game():
                 self.player_x = 736
 
             # enemy movement
-            for i in range(num_of_enemies):
+            for i in range(self.num_of_enemies):
                 # Game over
                 if self.enemy_y[i] > 400:
-                    for j in range(num_of_enemies):
+                    for j in range(self.num_of_enemies):
                         self.enemy_y[j] = 2000
                     self.show_game_over()
                     break
@@ -128,7 +128,7 @@ class Game():
                 self.show_bullet(self.bullet_x, self.bullet_y)
 
                 # Collision
-                for i in range(num_of_enemies):
+                for i in range(self.num_of_enemies):
                     if self.is_collision(self.enemy_x[i], self.enemy_y[i], self.bullet_x, self.bullet_y):
                         self.bullet_state = "ready"
                         self.score_value += 1
@@ -151,6 +151,11 @@ class Game():
                  enemy_speed=2,
 
                  num_of_enemies=6):
+
+        # settings
+        self.player_speed = player_speed
+        self.enemy_speed = enemy_speed
+        self.num_of_enemies = num_of_enemies
 
         pygame.init()
 
