@@ -4,6 +4,13 @@ import random
 import math
 
 
+class GameAction(enumerate):
+    Idle = 0
+    Shoot = 1
+    Left = 2
+    Right = 3
+
+
 class Game():
 
     def reset_enemies(self):
@@ -58,14 +65,14 @@ class Game():
         self.screen.blit(game_over, (220, 250))
 
 
-    def do_each_game_loop(self):
+    def do_each_game_loop(self, action=None):
 
         # Red, Green, Blue
         self.screen.fill((0, 0, 0))
         # Background image
         self.screen.blit(self.background, (0, 0))
 
-        # input
+        # input {
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -74,25 +81,29 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 # this only hit once even when key is kept down.
                 if event.key == pygame.K_LEFT:
-                    # print("key left pressed")
                     self.player_x_change = -self.player_speed
                 if event.key == pygame.K_RIGHT:
-                    # print("key right pressed")
                     self.player_x_change = self.player_speed
                 if event.key == pygame.K_SPACE:
-                    # print("key space pressed")
-                    # bullet_state = "fire"
-                    # bullet_y = player_y
-                    # bullet_x = player_x
                     self.fire_bullet(self.player_x, self.player_y)
                 if event.key == pygame.K_r:
                     self.reset()
                     self.score_value = 0
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                    # print("key released")
                     self.player_x_change = 0
             # }
+        
+        if not action is None:
+            if (action == GameAction.Idle):
+                pass
+            elif (action == GameAction.Shoot):
+                self.fire_bullet(self.player_x, self.player_y)
+            elif (action == GameAction.Left):
+                self.player_x_change = -self.player_speed
+            elif (action == GameAction.Right):
+                self.player_x_change = self.player_speed
+        # }
 
         # movement
         if not self.is_game_over:
