@@ -70,7 +70,7 @@ def run_one_episode(env: Environment, agent: Agent, batch: Batch_package, total_
 
 
 def train(num_episodes=200, batch_size=16, is_render=False):
-    env = Environment()
+    env = Environment(is_render=is_render)
     state = env.get_state()
     action_space = env.get_action_space()
     agent = None

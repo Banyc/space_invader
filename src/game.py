@@ -13,13 +13,16 @@ class GameAction():
 
 class Game():
 
-    def __init__(self, bullet_speed=5,
+    def __init__(self,
+                 is_render,
+                 bullet_speed=5,
                  player_speed=2.5,
                  enemy_speed=2,
 
                  num_of_enemies=6):
 
         # settings
+        self.is_render = is_render
         self.bullet_speed = bullet_speed
         self.player_speed = player_speed
         self.enemy_speed = enemy_speed
@@ -28,17 +31,21 @@ class Game():
         pygame.init()
 
         # Create the screen
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = None
+        if self.is_render:
+            self.screen = pygame.display.set_mode((800, 600))
 
         # Title and Icon
-        pygame.display.set_caption("Space Invaders")
-        icon = pygame.image.load("images/ufo-icon.png")
-        pygame.display.set_icon(icon)
+        if self.is_render:
+            pygame.display.set_caption("Space Invaders")
+            icon = pygame.image.load("images/ufo-icon.png")
+            pygame.display.set_icon(icon)
 
         # background
-        background_temp = pygame.image.load(
-            "images/space-galaxy-background.jpg")
-        self.background = pygame.transform.scale(background_temp, (800, 600))
+        if self.is_render:
+            background_temp = pygame.image.load(
+                "images/space-galaxy-background.jpg")
+            self.background = pygame.transform.scale(background_temp, (800, 600))
 
         # enemy
         self.enemy_img = []
@@ -50,16 +57,17 @@ class Game():
         self.reset_enemies()
 
         # player
-        self.player_img = pygame.image.load("images/battleship.png")
-        self.player_img = pygame.transform.scale(self.player_img, (64, 64))
-
+        if self.is_render:
+            self.player_img = pygame.image.load("images/battleship.png")
+            self.player_img = pygame.transform.scale(self.player_img, (64, 64))
         self.player_x_change = 0
         self.player_x = 370
         self.player_y = 500
 
         # bullet
-        self.bullet_img = pygame.image.load("images/bullet.png")
-        self.bullet_img = pygame.transform.scale(self.bullet_img, (32, 32))
+        if self.is_render:
+            self.bullet_img = pygame.image.load("images/bullet.png")
+            self.bullet_img = pygame.transform.scale(self.bullet_img, (32, 32))
         self.bullet_x_change = 0
         self.bullet_y_change = -bullet_speed
         self.bullet_x = 0
@@ -70,13 +78,15 @@ class Game():
 
         # score
         self.score_value = 0
-        self.score_font = pygame.font.Font("freesansbold.ttf", 32)
+        if self.is_render:
+            self.score_font = pygame.font.Font("freesansbold.ttf", 32)
         self.text_x = 10
         self.text_y = 10
 
         # Game over
         self.is_game_over = False
-        self.game_over_font = pygame.font.Font("freesansbold.ttf", 64)
+        if self.is_render:
+            self.game_over_font = pygame.font.Font("freesansbold.ttf", 64)
 
     def reset_enemies(self):
         del self.enemy_img[:]
@@ -133,9 +143,11 @@ class Game():
     def do_each_game_loop(self, action=None):
 
         # Red, Green, Blue
-        self.screen.fill((0, 0, 0))
+        if self.is_render:
+            self.screen.fill((0, 0, 0))
         # Background image
-        self.screen.blit(self.background, (0, 0))
+        if self.is_render:
+            self.screen.blit(self.background, (0, 0))
 
         # input {
         for event in pygame.event.get():
@@ -218,16 +230,17 @@ class Game():
             # }
 
         # render {
-        if self.bullet_state == "fire":
-            self.show_bullet(self.bullet_x, self.bullet_y)
-        self.show_player(self.player_x, self.player_y)
-        self.show_score(self.text_x, self.text_y)
-        for i in range(self.num_of_enemies):
-            self.show_enemy(self.enemy_x[i], self.enemy_y[i], i)
-        if (self.is_game_over):
-            self.show_game_over()
+        if self.is_render:
+            if self.bullet_state == "fire":
+                self.show_bullet(self.bullet_x, self.bullet_y)
+            self.show_player(self.player_x, self.player_y)
+            self.show_score(self.text_x, self.text_y)
+            for i in range(self.num_of_enemies):
+                self.show_enemy(self.enemy_x[i], self.enemy_y[i], i)
+            if (self.is_game_over):
+                self.show_game_over()
 
-        pygame.display.update()
+            pygame.display.update()
         # }
 
         return True
