@@ -13,6 +13,71 @@ class GameAction(enumerate):
 
 class Game():
 
+    def __init__(self, bullet_speed=5,
+                 player_speed=2.5,
+                 enemy_speed=2,
+
+                 num_of_enemies=6):
+
+        # settings
+        self.bullet_speed = bullet_speed
+        self.player_speed = player_speed
+        self.enemy_speed = enemy_speed
+        self.num_of_enemies = num_of_enemies
+
+        pygame.init()
+
+        # Create the screen
+        self.screen = pygame.display.set_mode((800, 600))
+
+        # Title and Icon
+        pygame.display.set_caption("Space Invaders")
+        icon = pygame.image.load("images/ufo-icon.png")
+        pygame.display.set_icon(icon)
+
+        # background
+        background_temp = pygame.image.load(
+            "images/space-galaxy-background.jpg")
+        self.background = pygame.transform.scale(background_temp, (800, 600))
+
+        # enemy
+        self.enemy_img = []
+        self.enemy_x_change = []
+        self.enemy_y_change = []
+        self.enemy_x = []
+        self.enemy_y = []
+
+        self.reset_enemies()
+
+        # player
+        self.player_img = pygame.image.load("images/battleship.png")
+        self.player_img = pygame.transform.scale(self.player_img, (64, 64))
+
+        self.player_x_change = 0
+        self.player_x = 370
+        self.player_y = 500
+
+        # bullet
+        self.bullet_img = pygame.image.load("images/bullet.png")
+        self.bullet_img = pygame.transform.scale(self.bullet_img, (32, 32))
+        self.bullet_x_change = 0
+        self.bullet_y_change = -bullet_speed
+        self.bullet_x = 0
+        self.bullet_y = 0
+        # ready - hidden
+        # fire - moving
+        self.bullet_state = "ready"
+
+        # score
+        self.score_value = 0
+        self.score_font = pygame.font.Font("freesansbold.ttf", 32)
+        self.text_x = 10
+        self.text_y = 10
+
+        # Game over
+        self.is_game_over = False
+        self.game_over_font = pygame.font.Font("freesansbold.ttf", 64)
+
     def reset_enemies(self):
         del self.enemy_img[:]
         del self.enemy_x_change[:]
@@ -199,72 +264,6 @@ class Game():
 
         # Game over
         self.is_game_over = False
-
-
-    def __init__(self, bullet_speed=5,
-                 player_speed=2.5,
-                 enemy_speed=2,
-
-                 num_of_enemies=6):
-
-        # settings
-        self.bullet_speed = bullet_speed
-        self.player_speed = player_speed
-        self.enemy_speed = enemy_speed
-        self.num_of_enemies = num_of_enemies
-
-        pygame.init()
-
-        # Create the screen
-        self.screen = pygame.display.set_mode((800, 600))
-
-        # Title and Icon
-        pygame.display.set_caption("Space Invaders")
-        icon = pygame.image.load("images/ufo-icon.png")
-        pygame.display.set_icon(icon)
-
-        # background
-        background_temp = pygame.image.load(
-            "images/space-galaxy-background.jpg")
-        self.background = pygame.transform.scale(background_temp, (800, 600))
-
-        # enemy
-        self.enemy_img = []
-        self.enemy_x_change = []
-        self.enemy_y_change = []
-        self.enemy_x = []
-        self.enemy_y = []
-
-        self.reset_enemies()
-
-        # player
-        self.player_img = pygame.image.load("images/battleship.png")
-        self.player_img = pygame.transform.scale(self.player_img, (64, 64))
-
-        self.player_x_change = 0
-        self.player_x = 370
-        self.player_y = 500
-
-        # bullet
-        self.bullet_img = pygame.image.load("images/bullet.png")
-        self.bullet_img = pygame.transform.scale(self.bullet_img, (32, 32))
-        self.bullet_x_change = 0
-        self.bullet_y_change = -bullet_speed
-        self.bullet_x = 0
-        self.bullet_y = 0
-        # ready - hidden
-        # fire - moving
-        self.bullet_state = "ready"
-
-        # score
-        self.score_value = 0
-        self.score_font = pygame.font.Font("freesansbold.ttf", 32)
-        self.text_x = 10
-        self.text_y = 10
-
-        # Game over
-        self.is_game_over = False
-        self.game_over_font = pygame.font.Font("freesansbold.ttf", 64)
 
 
 if __name__ == "__main__":
