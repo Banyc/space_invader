@@ -1,7 +1,9 @@
-
+import os
 
 import numpy as np
 import torch
+
+import pickle
 
 from agent import Agent
 from environment import Environment
@@ -13,6 +15,16 @@ class Batch_package:
         self.states = []
         self.actions = []
         self.counter = 0
+
+
+def save_model(anything, directory="model_data"):
+    os.makedirs(directory, exist_ok=True)
+    with open(os.path.join(directory, "latest.pkl"), "wb") as fp:
+        pickle.dump(anything, fp)
+
+def load_model(directory="model_data"):
+    with open(os.path.join(directory, "latest.pkl"), "rb") as fp:
+        pickle.load(fp)
 
 
 def discount_rewards(rewards, gamma=0.99):
@@ -57,11 +69,17 @@ def run_one_episode(env: Environment, agent: Agent, batch: Batch_package, total_
     total_rewards.append(sum(rewards))
 
 
-def train(num_episodes=200, batch_size=1):
+def train(num_episodes=200, batch_size=16, is_render=False):
     env = Environment()
     state = env.get_state()
     action_space = env.get_action_space()
-    agent = Agent(action_space=action_space, state_dim=state.__len__())
+    agent = None
+    episode_index_start = 0
+    try:
+        agent, episode_index_start = load_model()
+    except:
+        agent = Agent(action_space=action_space, state_dim=state.__len__())
+    
 
     optimizer = agent.optim
 
@@ -69,7 +87,7 @@ def train(num_episodes=200, batch_size=1):
     total_rewards = []
 
 
-    for episode_index in range(num_episodes):
+    for episode_index in range(episode_index_start, num_episodes):
         run_one_episode(env, agent, batch, total_rewards)
 
         if batch.counter == batch_size:
@@ -90,6 +108,8 @@ def train(num_episodes=200, batch_size=1):
             loss.backward()
             # modify parameters
             optimizer.step()
+
+            save_model((agent, episode_index))
 
             del batch.actions[:]
             del batch.rewards[:]
