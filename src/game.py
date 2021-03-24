@@ -4,7 +4,7 @@ import random
 import math
 
 
-class GameAction(enumerate):
+class GameAction():
     Idle = 0
     Shoot = 1
     Left = 2
