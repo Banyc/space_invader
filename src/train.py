@@ -24,7 +24,7 @@ def save_model(anything, directory="model_data"):
 
 def load_model(directory="model_data"):
     with open(os.path.join(directory, "latest.pkl"), "rb") as fp:
-        pickle.load(fp)
+        return pickle.load(fp)
 
 
 def discount_rewards(rewards, gamma=0.99):
@@ -69,7 +69,7 @@ def run_one_episode(env: Environment, agent: Agent, batch: Batch_package, total_
     total_rewards.append(sum(rewards))
 
 
-def train(num_episodes=200, batch_size=16, is_render=False):
+def train(num_episodes=2000, batch_size=16, is_render=False):
     env = Environment(is_render=is_render)
     state = env.get_state()
     action_space = env.get_action_space()
