@@ -16,16 +16,8 @@ class Agent():
 
     def choose_action(self, state):
         action_propabilities = self.get_policy(state).detach().numpy()
+        # print(f"\r{action_propabilities}", end="")
         return np.random.choice(self.action_space, p=action_propabilities)
-
-
-    def update_policy(self):
-
-        pass
-
-
-    # def compute_loss(self, ):
-
     
     def get_policy(self, state):
         action_propabilities = self.logits_net(torch.FloatTensor(state))
